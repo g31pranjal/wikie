@@ -1,6 +1,7 @@
 import threading
 import logging
-
+from lxml import html
+import requests
 
 
 class CrawlingThread(threading.Thread) :
@@ -15,7 +16,19 @@ class CrawlingThread(threading.Thread) :
 		# initializing thread statement
 		
 		logging.debug("# initiating ...");	
-		URL = self.fIO.returnURL()
+		
+		URL = self.fIO.resolveURL()
+
+		print URL
+
+		if(URL is not None) :
+			#scrap content from the URL
+			logging.debug('# Downloading the source : ' + URL['tup'][0] )
+			page = requests.get('https://en.wikipedia.org/wiki/India')
+			raw_text = page.text.encode('utf-8')
+
+			print raw_text
+
 		
 		logging.debug("... end ...")
 		return

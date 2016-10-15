@@ -24,61 +24,110 @@ class FileOperations(object) :
 	def __init__(self) :
 		self.lock = threading.Lock()
 
-	def returnURL(self) :
+	def resolveURL(self) :
 		logging.debug("# trying to acquire the lock for Control Files IO Operations");
 		self.lock.acquire()
 
-		statFiles = os.listdir('./cntrl/');
-		statFiles = [x for x in statFiles if re.match('repo\.[0-9]+\.stats', x)]
-		statFiles.sort(reverse = True)
+		ret = None
+		try : 
+			ePointer = -1
 
-		ePointer = -1
-		repo = ''
-
-		for f in statFiles :
-			repo = f
-			logging.debug("# opening stat file : " + './cntrl/' + f)
-			fhandle = open('./cntrl/' + f, 'r')
+			# reading the main stats file
+			fhandle = open('./cntrl/main.stats', 'r')
 			stats = eval(fhandle.read());
-			# print stats
-			logging.debug('# ' + str(len(stats['fatality'])) + ' fatality(s) found.. ')
-			
-			if(len(stats['fatality']) > 0) :
-				ePointer = stats['fatality'][0]
-				stats['fatality'].remove(ePointer)
-				
-				if(ePointer > stats['entries']) :
-					logging.debug('CORRECTED ERROR :: Invalid fatality entry in file ' + './cntrl/' + f)
-					ePointer = -1
-				else :
-					logging.debug('# Setting Effective pointer to ' + str(ePointer) + ' in file ' + './cntrl/' + f)
+			logging.debug('# file status : ' + str(stats));
+
+			if len(stats['fatality']) > 0 :
+				logging.debug('# fatal entry found in main.stats')
+				ongoing = stats['fatality'][0]
+				stats['fatality'].remove(ongoing)
+				fhandle = open('./cntrl/main.stats', 'w')
+				fhandle.write(str(stats))
 
 			else :
-				if(stats['pointer'] > stats['entries']) : 	
-					pass
+				ongoing = stats['ongoing']
+
+			if(ongoing <= stats['files'] ) :
+				
+				fid = ongoing
+				f = 'repo.' + ongoing + '.stats'
+
+				logging.debug("# opening stat file : " + './cntrl/' + f)
+				fhandle = open('./cntrl/' + f, 'r')
+				repostats = eval(fhandle.read());
+		 		logging.debug('# ' + str(len(repostats['fatality'])) + ' fatality(s) found.. ')
+				
+				# clear fatalaties first, in case of any
+				if(len(repostats['fatality']) > 0) :
+					arr = repostats['fatality']
+					ePointer = arr[0]
+					repostats['fatality'].remove(ePointer)
+
+					fhandle = open('./cntrl/' + f, 'w')
+					fhandle.write(str(repostats))
+					
+					logging.debug('# Fatal entry : '+ str(ePointer))
+					
+					if(ePointer > repostats['entries']) :
+						logging.debug('CORRECTED ERROR :: Invalid fatality entry in file ' + './cntrl/' + f)
+						ePointer = -1
+					else :
+						logging.debug('# Setting Effective pointer to ' + str(ePointer) + ' in file ' + './cntrl/' + f)
+
+				# take the pointer and increment by 1
 				else :
-					ePointer = stats['pointer']
-					stats['pointer'] += 1
-					logging.debug('# Setting Effective pointer to ' + str(ePointer) + ' in file ' + './cntrl/' + f)
+					if(repostats['pointer'] > repostats['entries']) :
+						logging.debug('# pointer ended, updating main.stats !') 	
+						
+						fhandle = open('./cntrl/main.stats', 'w')
+						
+						num = 0
+						for i in range(0,4) :
+							num = num*26 + (ord(fid[i:i+1]) - 97)
+						num += 1
 
-			fcor = open('./cntrl/' + f, 'w')
-			fcor.write(str(stats))
-			fcor.close()
+						code = ''
+						for i in range(3, -1, -1) :
+							code = code + chr(num/(26**i) + 97)
+							num %= (26**i)
 
-			if(ePointer != -1) : 
-				break
+						stats['ongoing'] = code
+						fhandle.write(str(stats))
 
-		if(ePointer == -1) :
-			logging.debug('# No URL left to crawl. Exiting ... ')
-		else :
-			logging.debug('')
-			pass
+					else :
+						ePointer = repostats['pointer']
+						repostats['pointer'] += 1
+						logging.debug('# Setting Effective pointer to ' + str(ePointer) + ' in file ' + './cntrl/' + f)
 
-		try : 
-			pass
+				if(ePointer == -1) :
+					logging.debug('# No URL left to crawl. Exiting ... ')
+					
+				else :
+					# fetch the URL pointed by ePointer from the file
+					repoFile = 'url.repo.' + fid
+
+					logging.debug('Fetching URL and docID from ' + repoFile)
+
+					fRepo = open('./cntrl/' + repoFile, 'r')
+					tup = eval((fRepo.readlines()[ePointer - 1: ePointer][0]).split('\n')[0])
+
+					fhandle = open('./cntrl/' + f, 'w')
+					fhandle.write(str(repostats))
+
+					logging.debug(tup)
+
+					ret = {'fid' : fid, 'tup' : tup, 'ep' : ePointer}
+					
+
+		except Exception :
+			logging.debug('# Error in fetching URL. Exiting ...')
 		
 		finally :
 			self.lock.release()
+			return ret
+
+
+
 
 
 
@@ -88,7 +137,7 @@ fIO = FileOperations()
 
 while(True) :
 	time.sleep(1)
-	if(len(threading.enumerate()) < 5 ) :
+	if(len(threading.enumerate()) <= 1 ) :
 		t = ct.CrawlingThread(kwargs = {'fileIO' : fIO})
 		t.start()
 	
