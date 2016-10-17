@@ -1,6 +1,5 @@
 import threading
 import logging
-from lxml import html
 import requests
 
 
@@ -17,20 +16,35 @@ class CrawlingThread(threading.Thread) :
 		
 		logging.debug("# initiating ...");	
 		
-		URL = self.fIO.resolveURL()
+		inf = self.fIO.resolveURL()
 
-		print URL
+		logging.debug("# Resolved URL entry : " + str(inf))
 
-		if(URL is not None) :
+		if(inf is not None) :
 			#scrap content from the URL
-			logging.debug('# Downloading the source : ' + URL['tup'][0] )
-			page = requests.get('https://en.wikipedia.org/wiki/India')
-			raw_text = page.text.encode('utf-8')
+			logging.debug('# Downloading the source : https://en.wikipedia.org' + inf['url'] )
+			page = requests.get('https://en.wikipedia.org' + inf['url'])
+			
+			if page.status_code is 200 :
+				raw_text = page.text.encode('utf-8')
 
-			print raw_text
+				fhandle = open('repo/'+inf['docid']+'.raw', 'w')
+				fhandle.write(raw_text)
+				fhandle.close()
+
+				self.fIO.crawlResult(1 ,inf['docid'])
+			else :
+				self.fIO.crawlResult(0 ,inf['docid'])
+
+
+			# create a list of all the (not unique) URLS that can be reached from the current page
+
+			# lst = ['/wiki/China','/wiki/Peru','/wiki/Argentina','/wiki/Brazil','/wiki/Mexico','/wiki/Canada','/wiki/new_york','/wiki/Bhutan','/wiki/Amazon','/wiki/Google','/wiki/San_fransisco','/wiki/London','/wiki/Antarctica','/wiki/Australia','/wiki/Japan','/wiki/Russia']
+			# self.fIO.addPages(inf['docid'], lst)
 
 		
 		logging.debug("... end ...")
 		return
 
-dummy commit
+
+
