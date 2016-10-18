@@ -60,13 +60,13 @@ class FileOperations(object) :
 		logging.debug("# Adding the child nodes ! : number of children : " + str(len(childList)))
 
 		for entry in childList :
-			logging.debug("# Processing child : " + entry + ".")
+			# logging.debug("# Processing child : " + entry + ".")
 			cursor.execute("SELECT * from pages where url = '" + entry + "'")
 
 			r = cursor.fetchone()
 
 			if r is None :
-				logging.debug("# The child is not in the scrapping queue. Arranging to add ... ")
+				# logging.debug("# The child is not in the scrapping queue. Arranging to add ... ")
 
 				docid = generateDocID()
 				cursor.execute("SELECT * from pages WHERE docid = '" + docid + "'")
@@ -79,7 +79,7 @@ class FileOperations(object) :
 
 				cursor.execute("INSERT into pages VALUES ('"+entry+"', '"+docid+"', 0, 0, 0, 0)")
 			else :
-				logging.debug("# The child already there !")
+				# logging.debug("# The child already there !")
 				docid = r[1]
 
 			cursor.execute("INSERT INTO edges VALUES ('"+parent+"', '"+docid+"')")

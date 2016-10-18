@@ -1,7 +1,7 @@
 import threading
 import logging
 import requests
-
+from bs4 import BeautifulSoup as bs
 
 class CrawlingThread(threading.Thread) :
 
@@ -33,14 +33,27 @@ class CrawlingThread(threading.Thread) :
 				fhandle.close()
 
 				self.fIO.crawlResult(1 ,inf['docid'])
+			
+				soup = bs(raw_text, 'html.parser')
+				x = soup.find("div", {'id' : 'mw-content-text'}, { 'class' : 'mw-content-ltr' })
+
+				lst = []
+
+				for a_tags in x('a') :
+					lst.append(str(a_tags.get('href')))
+
+				# must be an internal link only
+				lst = [x for x in lst if x.startswith("/wiki")]
+
+				# remove words which are not to be parsed
+				bad_words = ['list', 'List', 'svg', 'png', 'disambiguation', 'file', 'File', ':', '#']
+				for word in bad_words :
+					lst = [x for x in lst if word not in x]
+
+				self.fIO.addPages(inf['docid'], lst)
+
 			else :
 				self.fIO.crawlResult(0 ,inf['docid'])
-
-
-			# create a list of all the (not unique) URLS that can be reached from the current page
-
-			# lst = ['/wiki/China','/wiki/Peru','/wiki/Argentina','/wiki/Brazil','/wiki/Mexico','/wiki/Canada','/wiki/new_york','/wiki/Bhutan','/wiki/Amazon','/wiki/Google','/wiki/San_fransisco','/wiki/London','/wiki/Antarctica','/wiki/Australia','/wiki/Japan','/wiki/Russia']
-			# self.fIO.addPages(inf['docid'], lst)
 
 		
 		logging.debug("... end ...")
