@@ -3,6 +3,8 @@ import logging
 import requests
 from bs4 import BeautifulSoup as bs
 
+logging.basicConfig(level=logging.DEBUG,format='(%(threadName)-20s) %(message)s',)
+
 class CrawlingThread(threading.Thread) :
 
 	def __init__(self, group=None, target=None, name=None, args=(), kwargs=None, verbose=None) :

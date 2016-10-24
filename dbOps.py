@@ -31,6 +31,33 @@ class FileOperations(object) :
 	 	return ret
 
 
+
+	def getDocIDforHTMLRemoval(self) :
+		logging.debug("# trying to acquire the lock");
+	 	self.lock.acquire()
+
+	 	ret = {}
+
+	 	conn = sql.connect('cntrl/test.db')
+		cursor = conn.cursor()
+
+	 	cursor.execute("SELECT * from pages WHERE done = 1 AND html_freed = 0 AND scrap_d = 0")
+	 	r = cursor.fetchone()
+
+	 	if r is not None :
+	 		cursor.execute("UPDATE pages SET html_freed = 1 WHERE docid = '" + r[1] +"'")
+	 		conn.commit()
+	 		ret = r[1]
+	 	else :
+	 		ret = None
+
+	 	self.lock.release()
+
+	 	return ret
+
+
+
+
 	def crawlResult(self, status, docid) :
 
 		self.lock.acquire()
@@ -50,6 +77,24 @@ class FileOperations(object) :
 		self.lock.release()
 		
 
+	def cleaningResult(self, status, docid) :
+
+		self.lock.acquire()
+
+		conn = sql.connect('cntrl/test.db')
+		cursor = conn.cursor()
+
+		logging.debug("# Setting crawl result to " + docid +" , status : " + str(status) + "!... ")
+
+		if status == 1 :
+			cursor.execute("UPDATE pages SET scrap_d = 1, html_freed = 0 where docid = '" + docid + "'")
+		else :
+			cursor.execute("UPDATE pages SET scrap_d = 2, html_freed = 0 where docid = '" + docid + "'")
+
+		conn.commit()
+
+		self.lock.release()
+
 	def addPages(self, parent, childList) :
 
 		self.lock.acquire()
@@ -58,6 +103,8 @@ class FileOperations(object) :
 		cursor = conn.cursor()
 
 		logging.debug("# Adding the child nodes ! : number of children : " + str(len(childList)))
+
+		s = set()
 
 		for entry in childList :
 			# logging.debug("# Processing child : " + entry + ".")
@@ -82,7 +129,16 @@ class FileOperations(object) :
 				# logging.debug("# The child already there !")
 				docid = r[1]
 
-			cursor.execute("INSERT INTO edges VALUES ('"+parent+"', '"+docid+"')")
+			tmp = ( parent, docid )
+			s.add(tmp)
+
+		while len(s) is not 0 :
+			tmp = s.pop()
+			cursor.execute("INSERT INTO edges VALUES ('"+tmp[0]+"', '"+tmp[1]+"')")
+
+
+
+
 
 		conn.commit()
 
