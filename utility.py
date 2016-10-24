@@ -41,6 +41,38 @@ def cleanedFilelist() :
 	return s
 
 
+def edges() :
+
+	connect = sql.connect('cntrl/test_final.db')
+	cursor = connect.cursor()
+
+	cursor.execute('SELECT * from edges')
+
+	r = cursor.fetchone()
+
+	lst = []
+	while r is not None :
+		lst.append(r)
+		r = cursor.fetchone()
+
+	s = set(lst)
+
+	return s
+
+
+def recrawl() :
+
+	fhandle = open('recrawl', 'r')
+	dat = eval(fhandle.read())
+
+	connect = sql.connect('cntrl/test_final.db')
+	cursor = connect.cursor()
+
+	for entry in dat :
+		cursor.execute("UPDATE pages SET `done` = 3 WHERE `docid` = '" + entry + "'")
+	
+	connect.commit()
+
 
 
 

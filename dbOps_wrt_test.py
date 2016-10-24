@@ -13,9 +13,8 @@ class FileOperations(object) :
 
 	 	ret = {}
 
-	 	#conn = sql.connect('cntrl/test.db')
-	 	conn = sql.connect('cntrl/test_final.db')
-
+	 	conn = sql.connect('cntrl/test.db')
+	 
 		cursor = conn.cursor()
 
 	 	#cursor.execute("SELECT * from pages WHERE done = 0 AND processing = 0")
@@ -42,9 +41,8 @@ class FileOperations(object) :
 
 	 	ret = {}
 
-	 	#conn = sql.connect('cntrl/test.db')
-	 	conn = sql.connect('cntrl/test_final.db')
-		cursor = conn.cursor()
+	 	conn = sql.connect('cntrl/test.db')
+	 	cursor = conn.cursor()
 
 	 	cursor.execute("SELECT * from pages WHERE done = 1 AND html_freed = 0 AND scrap_d = 0")
 	 	r = cursor.fetchone()
@@ -67,9 +65,8 @@ class FileOperations(object) :
 
 		self.lock.acquire()
 
-		#conn = sql.connect('cntrl/test.db')
-	 	conn = sql.connect('cntrl/test_final.db')
-		
+		conn = sql.connect('cntrl/test.db')
+	 	
 		cursor = conn.cursor()
 
 		logging.debug("# Setting crawl result to " + docid +" , status : " + str(status) + "!... ")
@@ -88,9 +85,8 @@ class FileOperations(object) :
 
 		self.lock.acquire()
 
-		#conn = sql.connect('cntrl/test.db')
-	 	conn = sql.connect('cntrl/test_final.db')
-		
+		conn = sql.connect('cntrl/test.db')
+	 	
 		cursor = conn.cursor()
 
 		logging.debug("# Setting crawl result to " + docid +" , status : " + str(status) + "!... ")
@@ -108,9 +104,8 @@ class FileOperations(object) :
 
 		self.lock.acquire()
 
-		#conn = sql.connect('cntrl/test.db')
-	 	conn = sql.connect('cntrl/test_final.db')
-
+		conn = sql.connect('cntrl/test.db')
+	 	
 		cursor = conn.cursor()
 
 		logging.debug("# Adding the child nodes ! : number of children : " + str(len(childList)))

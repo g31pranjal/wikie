@@ -1,6 +1,6 @@
 import os
 import time
-import dbOps
+import dbOps_wrt_test as db
 import crawler as ct
 import scrapper as st
 import logging
@@ -19,7 +19,7 @@ print "\n\n"
 
 logging.debug("Main thread started. Starting child thread !..\n")
 
-fIO = dbOps.FileOperations()
+fIO = db.FileOperations()
 while(True) :
 	time.sleep(0.4)
 	if(len(threading.enumerate()) <= 20 ) :
