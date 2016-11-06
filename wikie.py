@@ -1,6 +1,6 @@
 import os
 import time
-import dbOps_wrt_test as db
+import dbOps as db
 import crawler as ct
 import scrapper as st
 import logging
@@ -26,9 +26,5 @@ while(True) :
 		u = st.ScrappingThread(kwargs = {'fileIO' : fIO})
 		u.start()
 
-		t = ct.CrawlingThread(kwargs = {'fileIO' : fIO})
-		t.start()
-			
-	
-
-
+		# t = ct.CrawlingThread(kwargs = {'fileIO' : fIO})
+		# t.start()

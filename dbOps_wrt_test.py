@@ -18,7 +18,7 @@ class FileOperations(object) :
 		cursor = conn.cursor()
 
 	 	#cursor.execute("SELECT * from pages WHERE done = 0 AND processing = 0")
-	 	cursor.execute("SELECT * from pages WHERE done = 3 AND `processing` = 0")
+	 	cursor.execute("SELECT * from pages WHERE done = 0 AND `processing` = 2")
 	 	
 	 	r = cursor.fetchone()
 
@@ -66,7 +66,6 @@ class FileOperations(object) :
 		self.lock.acquire()
 
 		conn = sql.connect('cntrl/test.db')
-	 	
 		cursor = conn.cursor()
 
 		logging.debug("# Setting crawl result to " + docid +" , status : " + str(status) + "!... ")
@@ -74,7 +73,7 @@ class FileOperations(object) :
 		if status == 1 :
 			cursor.execute("UPDATE pages SET done = 1, processing = 0 where docid = '" + docid + "'")
 		else :
-			cursor.execute("UPDATE pages SET done = 0, processing = 0 where docid = '" + docid + "'")
+			cursor.execute("UPDATE pages SET done = 2, processing = 0 where docid = '" + docid + "'")
 
 		conn.commit()
 
@@ -86,7 +85,6 @@ class FileOperations(object) :
 		self.lock.acquire()
 
 		conn = sql.connect('cntrl/test.db')
-	 	
 		cursor = conn.cursor()
 
 		logging.debug("# Setting crawl result to " + docid +" , status : " + str(status) + "!... ")

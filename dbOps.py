@@ -14,17 +14,17 @@ class FileOperations(object) :
 	 	ret = {}
 
 	 	#conn = sql.connect('cntrl/test.db')
-	 	conn = sql.connect('cntrl/test_final.db')
+	 	conn = sql.connect('cntrl/production.db')
 
 		cursor = conn.cursor()
 
 	 	#cursor.execute("SELECT * from pages WHERE done = 0 AND processing = 0")
-	 	cursor.execute("SELECT * from pages WHERE done = 3 AND `processing` = 0")
+	 	cursor.execute("SELECT * from pages WHERE done = 3 AND `processing` = 0	")
 	 	
 	 	r = cursor.fetchone()
 
 	 	if r is not None :
-	 		cursor.execute("UPDATE pages SET processing = 1 WHERE docid = '" + r[1] +"'")
+	 		cursor.execute("UPDATE pages SET processing = 1, done = 0 WHERE docid = '" + r[1] +"'")
 	 		conn.commit()
 	 		ret = { 'url' : r[0] , 'docid' : r[1] }
 	 	else :
@@ -43,7 +43,7 @@ class FileOperations(object) :
 	 	ret = {}
 
 	 	#conn = sql.connect('cntrl/test.db')
-	 	conn = sql.connect('cntrl/test_final.db')
+	 	conn = sql.connect('cntrl/production.db')
 		cursor = conn.cursor()
 
 	 	cursor.execute("SELECT * from pages WHERE done = 1 AND html_freed = 0 AND scrap_d = 0")
@@ -68,7 +68,7 @@ class FileOperations(object) :
 		self.lock.acquire()
 
 		#conn = sql.connect('cntrl/test.db')
-	 	conn = sql.connect('cntrl/test_final.db')
+	 	conn = sql.connect('cntrl/production.db')
 		
 		cursor = conn.cursor()
 
@@ -77,7 +77,7 @@ class FileOperations(object) :
 		if status == 1 :
 			cursor.execute("UPDATE pages SET done = 1, processing = 0 where docid = '" + docid + "'")
 		else :
-			cursor.execute("UPDATE pages SET done = 0, processing = 0 where docid = '" + docid + "'")
+			cursor.execute("UPDATE pages SET done = 2, processing = 0 where docid = '" + docid + "'")
 
 		conn.commit()
 
@@ -89,7 +89,7 @@ class FileOperations(object) :
 		self.lock.acquire()
 
 		#conn = sql.connect('cntrl/test.db')
-	 	conn = sql.connect('cntrl/test_final.db')
+	 	conn = sql.connect('cntrl/production.db')
 		
 		cursor = conn.cursor()
 
@@ -109,7 +109,7 @@ class FileOperations(object) :
 		self.lock.acquire()
 
 		#conn = sql.connect('cntrl/test.db')
-	 	conn = sql.connect('cntrl/test_final.db')
+	 	conn = sql.connect('cntrl/production.db')
 
 		cursor = conn.cursor()
 

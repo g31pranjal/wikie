@@ -1,0 +1,62 @@
+<head>
+	<title>
+		Wikie Search
+	</title>
+
+	<style>
+		
+	body {
+		background-color: #fafafa;
+	}
+
+	.q {
+		width : 500px;
+		height: 38px;
+		margin-left: calc(50% - 320px);
+		border : 1px solid #ccc;
+		border-radius: 2px;
+		outline: none;
+		font-size: 18px;
+		padding: 5px 10px;
+
+	}
+
+	.show {
+		width : 150px;
+		height: 38px;
+		border-radius: 2px;
+		outline: none;
+		font-size: 18px;
+		padding: 5px 10px;
+		background-color: #1E90FF;
+		border: 1px solid #1E90FF;
+		color: white;
+	}
+
+	.q:focus {
+		border : 1px solid #aaa;
+		font-size: 18px;
+	}
+
+	.logo {
+		font-size: 100px;
+		font-weight: bold;
+		text-align: center;
+		padding: 200px 0px 40px 0px;
+		color : #444;
+	}
+
+	</style>
+
+	<body>
+		<div class='logo'>w!k!e</div>
+
+		<form action="./results">
+
+			<input type=text name='q' class='q' placeholder="type your query... " />
+			<button class='show'>Search</button>
+
+		</form>
+
+	</body>
+</head>
