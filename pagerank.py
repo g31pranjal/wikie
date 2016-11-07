@@ -133,4 +133,18 @@ def pagerank_scale() :
 	connect.commit()
 
 
+def get_pagerank(lst = [ "wru896w", "ecr403h", "zre991n", "emo769w", "hri743h", "edu280f", "ywr043h", "ajo035x", "hcm341s", "yng119x" ]) :
+
+	rst = {}
+
+	for doc in lst :
+		cursor.execute("SELECT * from `pagerank-score` where `docid` = '"+str(doc)+"'")
+		r = cursor.fetchone()
+
+		rst[doc] = ( r[1], r[2] )
+
+
+	return rst
+
+
 #pagerank_scale()

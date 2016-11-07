@@ -48,8 +48,13 @@ def set_elo(lst, selected = "rwb641g") :
 	for doc in lst :
 		cursor.execute("SELECT * from `elo-rating` where `docid` = '"+str(doc)+"'")
 		r = cursor.fetchone()
-		tmp = (doc, r[1], float(r[1])/400)
+		tmp = (doc, r[1], float(r[1])/400, r[2])
+		
+		#print tmp
+
 		rst.append(tmp)
+
+
 
 	# calculate expected winning S^exp and damp it 
 	fst = [] 
@@ -61,15 +66,17 @@ def set_elo(lst, selected = "rwb641g") :
 			if tup1[0] == tup2[0] :
 				v = 1
 			else :
-				v = (1.001 ** -(tup1[1]-tup2[1]) )
+				v = (2 ** -(tup1[2]-tup2[2]) )
 			den += v
+
+		#print den
 
 		t = (1./den)*math.exp(-dampF)
 		dampF += 0.05
-		# print(" : "+str(1./den) + " : "+ str(t))
+		print(" : "+str(1./den) + " : "+ str(t))
 
 		sm += t
-		tmp = (tup1[0], tup1[1], t)
+		tmp = (tup1[0], tup1[1], t, tup1[3])
 		fst.append(tmp)	
 
 	# scale damped expected and calculate based on the selection
@@ -77,15 +84,17 @@ def set_elo(lst, selected = "rwb641g") :
 	gst = []
 	for entry in fst :
 		if entry[0] == selected :
-			tmp = (entry[0], entry[1], entry[1] +  100*(1 - entry[2]/val)   )
+			tmp = (entry[0], entry[1], entry[1] +  100*(1 - entry[2]/val)  , entry[3] + 1 )
 		else :
-			tmp = (entry[0], entry[1], entry[1] +  200*(0 - entry[2]/val)   )
+			tmp = (entry[0], entry[1], entry[1] +  200*(0 - entry[2]/val)  , entry[3] + 1 )
+
+		print tmp
 
 		gst.append(tmp)
 
 
 	for doc in gst : 
-		cursor.execute("update `elo-rating` set `rating` = "+ str(int(doc[2])) +" where `docid` = '" + doc[0] + "' ")
+		cursor.execute("update `elo-rating` set `rating` = "+ str(int(doc[2])) +", `count` = "+str(doc[3])+" where `docid` = '" + doc[0] + "' ")
 
 	connect.commit()
 
