@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.template import Context
 from django.http import HttpResponse, JsonResponse
 from search.models import *
+from mods import pagerank, elo, utility
 
 
 def index(request) :
@@ -10,5 +11,16 @@ def index(request) :
 
 
 def fetchResults(request) :
+
+	data = request.GET
+
+	query = str(data[unicode('q')])
+
+	print len(utility.correctDocs())
+
+
+
+
+
 	return render(request, "search/results.html")
 

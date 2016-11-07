@@ -26,5 +26,5 @@ while(True) :
 		u = st.ScrappingThread(kwargs = {'fileIO' : fIO})
 		u.start()
 
-		# t = ct.CrawlingThread(kwargs = {'fileIO' : fIO})
-		# t.start()
+		t = ct.CrawlingThread(kwargs = {'fileIO' : fIO})
+		t.start()

@@ -32,7 +32,11 @@ def get_elo(lst = [ "wru896w", "ecr403h", "zre991n", "emo769w", "hri743h", "edu2
 	dct = {} 
 
 	for entry in rst :
-		dct[entry[0]] = (     "{0:.4f}".format(  ((entry[1] - low)/diff ) )    ,   entry[2] )
+		if diff != 0 :
+			dct[entry[0]] = (     "{0:.4f}".format(  ((entry[1] - low)/diff ) )    ,   entry[2] )
+		else :
+			dct[entry[0]] = (     0    ,   entry[2] )
+
 
 	return dct
 

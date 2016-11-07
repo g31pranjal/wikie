@@ -19,7 +19,7 @@ class FileOperations(object) :
 		cursor = conn.cursor()
 
 	 	#cursor.execute("SELECT * from pages WHERE done = 0 AND processing = 0")
-	 	cursor.execute("SELECT * from pages WHERE done = 3 AND `processing` = 0	")
+	 	cursor.execute("SELECT * from pages WHERE done = 0 AND `processing` = 0	")
 	 	
 	 	r = cursor.fetchone()
 
