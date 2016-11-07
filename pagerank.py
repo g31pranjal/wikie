@@ -13,6 +13,8 @@ def pagerank_rec() :
 	t = utility.correctDocs()
 	t = list(t)
 
+	N = 1./len(t)
+
 	dct = {}
 	for entry in t :
 		dct[str(entry[1])] = entry[2]
@@ -53,7 +55,7 @@ def pagerank_rec() :
 	s = 0
 	error = 0
 
-	for i in range(0,40) :
+	for i in range(0,50) :
 		s = 0
 
 		print "iteration :: " + str(i) + ". Resuming in 5(secs)"
@@ -70,7 +72,7 @@ def pagerank_rec() :
 			if len(tmp) != 0 :
 				for x in tmp :
 					tmp1 += lst[x][0]/dct[x]
-				tmp1 = 0.85*tmp1
+				tmp1 = 0.85*tmp1 + 0.15*N
 			
 			s += tmp1
 			tp = (lst[key][0], tmp1)
@@ -113,7 +115,7 @@ def pagerank_scale() :
 	r= cursor.fetchone()
 	lst = {}
 	while r is not None :
-		lst[str(r[0])] = (r[1], ( (( r[1] - 1.e-6)/(5e-3 - 1.e-6)) ** (1./3)  )  )
+		lst[str(r[0])] = (r[1], ( (( r[1] - 1.e-9)/(5e-3 - 1.e-9)) ** (1./3)  )  )
 		print(lst[str(r[0])][1])
 		r = cursor.fetchone()
 
@@ -131,4 +133,4 @@ def pagerank_scale() :
 	connect.commit()
 
 
-pagerank_scale()
+#pagerank_scale()

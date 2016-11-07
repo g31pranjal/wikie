@@ -218,7 +218,7 @@ def pagerank_init() :
 	sm = 0
 
 	for doc in docs :
-		cursor.execute("insert into `pagerank-score` (`docid`, `rank0`, `rank1`) values ( '" + doc + "', "+str(init)+", 0.0 ) ")
+		cursor.execute("insert into `pagerank-score` (`docid`, `rank0`, `score`) values ( '" + doc[1] + "', "+str(init)+", 0.0 ) ")
 		sm += init
 
 	print sm
