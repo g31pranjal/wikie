@@ -4,10 +4,12 @@ import time
 import math
 
 
-connect = sql.connect('cntrl/worker.db')
-cursor = connect.cursor()
 
 def pagerank_rec() :
+
+
+	connect = sql.connect('cntrl/worker.db')
+	cursor = connect.cursor()
 
 	# dictionary of outdegrees
 	t = utility.correctDocs()
@@ -111,6 +113,10 @@ def pagerank_rec() :
 
 def pagerank_scale() :
 
+
+	connect = sql.connect('cntrl/worker.db')
+	cursor = connect.cursor()
+
 	cursor.execute('select * from `pagerank-score`')
 	r= cursor.fetchone()
 	lst = {}
@@ -135,16 +141,24 @@ def pagerank_scale() :
 
 def get_pagerank(lst = [ "wru896w", "ecr403h", "zre991n", "emo769w", "hri743h", "edu280f", "ywr043h", "ajo035x", "hcm341s", "yng119x" ]) :
 
-	rst = {}
+
+	connect = sql.connect('cntrl/worker.db')
+	cursor = connect.cursor()
+
+	rst = []
 
 	for doc in lst :
 		cursor.execute("SELECT * from `pagerank-score` where `docid` = '"+str(doc)+"'")
 		r = cursor.fetchone()
+		try :
+			rst.append(  (str(doc), r[2]) )
+		except Exception :
+			pass
 
-		rst[doc] = ( r[1], r[2] )
+	s = sorted(rst, key = lambda x : x[1], reverse = True)
+	s = [x[0] for x in s ]
 
-
-	return rst
+	return s
 
 
 #pagerank_scale()

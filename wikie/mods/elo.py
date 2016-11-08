@@ -1,22 +1,27 @@
 import sqlite3 as sql
 import math
 
-connect = sql.connect('cntrl/worker.db')
-cursor = connect.cursor()
+
 
 
 
 def get_elo(lst = [ "wru896w", "ecr403h", "zre991n", "emo769w", "hri743h", "edu280f", "ywr043h", "ajo035x", "hcm341s", "yng119x" ]) :
 
+	connect = sql.connect('cntrl/worker.db')
+	cursor = connect.cursor()
+
 	# list of tuple to store rankings 
 	rst = []
 
 	for doc in lst :
-		cursor.execute("SELECT * from `elo-rating` where `docid` = '"+str(doc)+"'")
-		r = cursor.fetchone()
+		try :
+			cursor.execute("SELECT * from `elo-rating` where `docid` = '"+str(doc)+"'")
+			r = cursor.fetchone()
 
-		tmp = (doc, r[1], r[2])
-		rst.append(tmp)
+			tmp = (doc, r[1], r[2])
+			rst.append(tmp)
+		except Exception :
+			pass
 
 
 	cursor.execute("select `rating` from `elo-rating` order by `rating` DESC limit 1")
@@ -29,16 +34,21 @@ def get_elo(lst = [ "wru896w", "ecr403h", "zre991n", "emo769w", "hri743h", "edu2
 
 	diff = high - low 
 
-	dct = {} 
+	dct = []
+
 
 	for entry in rst :
 		if diff != 0 :
-			dct[entry[0]] = (     "{0:.4f}".format(  ((entry[1] - low)/diff ) )    ,   entry[2] )
+			dct.append(   (  entry[0] ,   "{0:.4f}".format(  ((entry[1] - low)/diff ) )    ,   entry[2] )  )
 		else :
-			dct[entry[0]] = (     0    ,   entry[2] )
+			dct.append( ( entry[0]  ,  0    ,   entry[2] ) )
 
+	s = sorted(dct, key = lambda x : x[1], reverse = True)
 
-	return dct
+	lst = [x[0] for x in s]
+	cnt = [x[2] for x in s]
+
+	return (lst, cnt)
 
 
 
@@ -46,6 +56,9 @@ def get_elo(lst = [ "wru896w", "ecr403h", "zre991n", "emo769w", "hri743h", "edu2
 def set_elo(lst, selected = "rwb641g") :
 
 	lst = ["fng105e", "qjv742d", "ymi617z", "rwb641g", "uck812y", "fcj482b", "jjh305d", "lih081o", "klq010c", "wnt749r", "elh075w", "ymb767w", "zoe107r", "dfg824i", "iwq376q", "yng119x" ,"hcm341s", "ajo035x", "ywr043h", "edu280f", "hri743h", "emo769w", "zre991n", "ecr403h", "wru896w"]
+
+	connect = sql.connect('cntrl/worker.db')
+	cursor = connect.cursor()
 
 	# retrieve current ratings 
 	rst = []
