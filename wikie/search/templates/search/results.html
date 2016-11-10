@@ -7,6 +7,9 @@
 		
 	body {
 		background-color: #fafafa;
+		padding : 0;
+		margin: 0;
+		font-family : sans-serif;
 	}
 
 	.q {
@@ -46,9 +49,105 @@
 		color : #444;
 	}
 
+	.logoS {
+		font-size: 70px;
+		font-weight: bold;
+		color : #444;
+		padding: 20px 50px;
+		width: 200px;
+		float: left;
+		font-family : serif;
+	}
+
+	.header {
+		position: fixed;
+		height: 120px;
+		width: 100%;
+		border-bottom : 1px solid #aaa;
+		z-index : 100;
+		background-color: #fafafa
+
+	}
+
+	.res-container {
+		position: absolute;
+		top : 154px;
+		width: 100%;
+		background-color: white;
+	}
+
+	.frm {
+		margin-top: 40px;
+		width : 50%;
+		margin-right: 400px;
+		float : right; 
+	}
+
+	.wrapper {
+		width: 80%;
+		height: 100px;
+		padding: 30px 0px 0px 50px;
+		border-bottom: 1px solid #eee;
+	}
+
+	.ttl {
+		font-size: 22px;
+		font-weight: bold;
+	}
+
+	.urlslot {
+		font-size: 15px;
+		font-weight: 100;
+		color : #14911c;
+	}
+
+	.scf {
+		padding: 8px 0px;
+	}
+
+	.searchfor {
+		top : 130px;
+		padding: 0px 40%;
+		position: absolute;
+	}
+
 	</style>
 
 	<body>
-		results !
+
+		<div class="header">
+			<div class = logoS>w!k!e</div>
+			<form action="/search/results" class = "frm">
+				<input type=text name='q' class='q' placeholder="type your query... " />
+				<button class='show'>Search</button>
+
+			</form>
+			
+		</div>
+		<div class = "searchfor">Searched for : <i><b>{{query}}</b></i></div>
+
+		<div class="res-container"> 
+
+		{% for record in lst %}
+
+			<div class="wrapper">
+				
+				
+				<div class="ttl"><a href="/search/goto?clicked={{record.0}}&url=https://en.wikipedia.org{{record.1}}&served={{string}}">{{record.3}} - Wikipedia</a><br>
+				<span class="urlslot">https://en.wikipedia.org{{record.1}}</span>
+				</div>
+				
+
+				<div class="scf"><i>Score(Merged) : </i>{{record.2}}</div>
+
+			</div>
+
+
+		{% endfor %}
+
+
+		</div>
+
+
 	</body>
 </head>

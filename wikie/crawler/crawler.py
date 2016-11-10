@@ -36,7 +36,6 @@ class CrawlingThread(threading.Thread) :
 					fhandle.write(raw_text)
 					fhandle.close()
 
-				
 					soup = bs(raw_text, 'html.parser')
 					x = soup.find("div", {'id' : 'mw-content-text'}, { 'class' : 'mw-content-ltr' })
 

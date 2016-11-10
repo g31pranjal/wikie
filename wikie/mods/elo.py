@@ -55,7 +55,7 @@ def get_elo(lst = [ "wru896w", "ecr403h", "zre991n", "emo769w", "hri743h", "edu2
 # limit elo to 25
 def set_elo(lst, selected = "rwb641g") :
 
-	lst = ["fng105e", "qjv742d", "ymi617z", "rwb641g", "uck812y", "fcj482b", "jjh305d", "lih081o", "klq010c", "wnt749r", "elh075w", "ymb767w", "zoe107r", "dfg824i", "iwq376q", "yng119x" ,"hcm341s", "ajo035x", "ywr043h", "edu280f", "hri743h", "emo769w", "zre991n", "ecr403h", "wru896w"]
+	# lst = ["fng105e", "qjv742d", "ymi617z", "rwb641g", "uck812y", "fcj482b", "jjh305d", "lih081o", "klq010c", "wnt749r", "elh075w", "ymb767w", "zoe107r", "dfg824i", "iwq376q", "yng119x" ,"hcm341s", "ajo035x", "ywr043h", "edu280f", "hri743h", "emo769w", "zre991n", "ecr403h", "wru896w"]
 
 	connect = sql.connect('cntrl/worker.db')
 	cursor = connect.cursor()
@@ -89,8 +89,8 @@ def set_elo(lst, selected = "rwb641g") :
 		#print den
 
 		t = (1./den)*math.exp(-dampF)
-		dampF += 0.05
-		print(" : "+str(1./den) + " : "+ str(t))
+		dampF += 0.025
+		# print(" : "+str(1./den) + " : "+ str(t))
 
 		sm += t
 		tmp = (tup1[0], tup1[1], t, tup1[3])
@@ -101,11 +101,11 @@ def set_elo(lst, selected = "rwb641g") :
 	gst = []
 	for entry in fst :
 		if entry[0] == selected :
-			tmp = (entry[0], entry[1], entry[1] +  100*(1 - entry[2]/val)  , entry[3] + 1 )
+			tmp = (entry[0], entry[1], entry[1] +  70*(1 - entry[2]/val)  , entry[3] + 1 )
 		else :
-			tmp = (entry[0], entry[1], entry[1] +  200*(0 - entry[2]/val)  , entry[3] + 1 )
+			tmp = (entry[0], entry[1], entry[1] +  100*(0 - entry[2]/val)  , entry[3] + 1 )
 
-		print tmp
+		# print tmp
 
 		gst.append(tmp)
 

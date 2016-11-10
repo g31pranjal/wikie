@@ -162,12 +162,12 @@ def posting(word):
 
 
 def calcWeightage(Elo_count) :
-	Rrel = 0.2
+	Rrel = 0.4
 	Rran = 1. - Rrel
 
 	hm = stats.hmean(Elo_count) - 10
 
-	elo_confidence = 0.6 * (1 - math.exp(-hm / 2) )
+	elo_confidence = 0.4 * (1 - math.exp(-hm / 2) )
 
 	elo_contri = Rran * (elo_confidence)
 	pr_contri  = Rran - elo_contri
@@ -188,4 +188,4 @@ def rank_merge(lst_D, pr_D, elo_D, wl, wp, we) :
 
 	s = sorted( dct , key = lambda x : x[1], reverse = True)
 
-	print [ x[0] for x in s ]
+	return s
