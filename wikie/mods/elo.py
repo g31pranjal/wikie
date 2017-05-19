@@ -3,8 +3,6 @@ import math
 
 
 
-
-
 def get_elo(lst = [ "wru896w", "ecr403h", "zre991n", "emo769w", "hri743h", "edu280f", "ywr043h", "ajo035x", "hcm341s", "yng119x" ]) :
 
 	connect = sql.connect('cntrl/worker.db')
@@ -23,7 +21,6 @@ def get_elo(lst = [ "wru896w", "ecr403h", "zre991n", "emo769w", "hri743h", "edu2
 		except Exception :
 			pass
 
-
 	cursor.execute("select `rating` from `elo-rating` order by `rating` DESC limit 1")
 	tmp = cursor.fetchone()
 	high = float(tmp[0])
@@ -35,7 +32,6 @@ def get_elo(lst = [ "wru896w", "ecr403h", "zre991n", "emo769w", "hri743h", "edu2
 	diff = high - low 
 
 	dct = []
-
 
 	for entry in rst :
 		if diff != 0 :

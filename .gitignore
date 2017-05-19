@@ -1,3 +1,7 @@
 repo/
 cntrl/
 *.pyc
+cleaned/
+final_stuff/
+term-weights/
+wikie/indexing-utility/sample_files/
